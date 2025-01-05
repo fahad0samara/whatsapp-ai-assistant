@@ -1,0 +1,139 @@
+{
+  "workflows": {
+    "user_onboarding": {
+      "trigger": "new_user_registration",
+      "steps": [
+        {
+          "action": "send_welcome_message",
+          "template": "welcome",
+          "delay": "0s"
+        },
+        {
+          "action": "collect_preferences",
+          "required_fields": ["timezone", "language"],
+          "timeout": "24h"
+        },
+        {
+          "action": "setup_integrations",
+          "services": ["calendar", "weather"],
+          "conditional": "user.preferences.services"
+        }
+      ]
+    },
+    "task_management": {
+      "trigger": "task_created",
+      "steps": [
+        {
+          "action": "validate_task",
+          "checks": ["due_date", "priority"]
+        },
+        {
+          "action": "set_reminders",
+          "schedule": {
+            "initial": "-1d",
+            "followup": "-1h"
+          }
+        },
+        {
+          "action": "notify_stakeholders",
+          "channels": ["whatsapp", "email"]
+        }
+      ]
+    },
+    "meeting_scheduler": {
+      "trigger": "meeting_request",
+      "steps": [
+        {
+          "action": "check_availability",
+          "calendars": ["user", "participants"]
+        },
+        {
+          "action": "propose_slots",
+          "count": 3,
+          "priority": "preference_score"
+        },
+        {
+          "action": "send_invitations",
+          "template": "meeting_invite",
+          "include_calendar_attachment": true
+        }
+      ]
+    }
+  },
+  "automation_rules": {
+    "message_routing": {
+      "conditions": {
+        "business_hours": {
+          "action": "ai_response",
+          "fallback": "queue_for_human"
+        },
+        "priority_user": {
+          "action": "priority_queue",
+          "max_wait_time": "5m"
+        }
+      }
+    },
+    "escalation": {
+      "triggers": {
+        "response_time": {
+          "threshold": "10m",
+          "action": "notify_supervisor"
+        },
+        "error_rate": {
+          "threshold": 0.05,
+          "window": "5m",
+          "action": "enable_fallback_mode"
+        }
+      }
+    }
+  },
+  "scheduled_tasks": {
+    "daily": [
+      {
+        "task": "send_daily_summary",
+        "time": "18:00",
+        "timezone": "user_timezone"
+      },
+      {
+        "task": "cleanup_old_data",
+        "time": "00:00",
+        "retention_days": 30
+      }
+    ],
+    "weekly": [
+      {
+        "task": "generate_analytics",
+        "day": "Monday",
+        "time": "06:00"
+      }
+    ]
+  },
+  "integration_workflows": {
+    "calendar_sync": {
+      "frequency": "5m",
+      "providers": ["google", "outlook"],
+      "conflict_resolution": "latest_wins"
+    },
+    "weather_updates": {
+      "frequency": "1h",
+      "conditions": {
+        "significant_change": true,
+        "user_preferences": true
+      }
+    }
+  },
+  "error_handling": {
+    "retry_policy": {
+      "max_attempts": 3,
+      "backoff": {
+        "initial": "1s",
+        "multiplier": 2,
+        "max": "1m"
+      }
+    },
+    "fallback_actions": {
+      "api_timeout": "use_cached_data",
+      "service_unavailable": "alternative_provider"
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "payment_providers": {
+    "stripe": {
+      "enabled": true,
+      "mode": "live",
+      "api_version": "2023-10-16",
+      "payment_methods": {
+        "cards": true,
+        "bank_transfer": true,
+        "digital_wallets": ["apple_pay", "google_pay"]
+      },
+      "webhook_endpoints": {
+        "success_url": "/payment/success",
+        "cancel_url": "/payment/cancel",
+        "webhook_secret": "{{STRIPE_WEBHOOK_SECRET}}"
+      }
+    },
+    "paypal": {
+      "enabled": true,
+      "mode": "live",
+      "api_version": "v2",
+      "features": {
+        "express_checkout": true,
+        "subscriptions": true,
+        "recurring_payments": true
+      }
+    }
+  },
+  "subscription_plans": {
+    "basic": {
+      "price_id": "price_basic_monthly",
+      "features": [
+        "standard_response_time",
+        "basic_analytics",
+        "5_concurrent_tasks"
+      ],
+      "limits": {
+        "messages_per_day": 100,
+        "storage_gb": 5
+      }
+    },
+    "premium": {
+      "price_id": "price_premium_monthly",
+      "features": [
+        "priority_response",
+        "advanced_analytics",
+        "unlimited_tasks",
+        "custom_integrations"
+      ],
+      "limits": {
+        "messages_per_day": 1000,
+        "storage_gb": 50
+      }
+    }
+  },
+  "transaction_management": {
+    "currency": {
+      "default": "USD",
+      "supported": ["USD", "EUR", "GBP"]
+    },
+    "refund_policy": {
+      "window_days": 30,
+      "automatic_refund_reasons": [
+        "duplicate_charge",
+        "fraudulent",
+        "service_unavailable"
+      ]
+    },
+    "invoice_settings": {
+      "auto_generate": true,
+      "due_days": 30,
+      "reminder_days": [7, 3, 1]
+    }
+  },
+  "security": {
+    "pci_compliance": {
+      "enabled": true,
+      "tokenization": true,
+      "data_encryption": true
+    },
+    "fraud_detection": {
+      "enabled": true,
+      "rules": {
+        "max_amount": 1000,
+        "max_daily_transactions": 10,
+        "blocked_countries": [],
+        "velocity_check": {
+          "time_window": 3600,
+          "max_attempts": 5
+        }
+      }
+    }
+  },
+  "notifications": {
+    "payment_success": {
+      "customer": {
+        "whatsapp": true,
+        "email": true
+      },
+      "admin": {
+        "email": true,
+        "webhook": true
+      }
+    },
+    "payment_failure": {
+      "customer": {
+        "whatsapp": true,
+        "email": true
+      },
+      "admin": {
+        "email": true,
+        "webhook": true
+      }
+    }
+  }
+}

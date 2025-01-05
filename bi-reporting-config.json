@@ -1,0 +1,151 @@
+{
+  "dashboards": {
+    "executive_summary": {
+      "refresh_rate": "1h",
+      "widgets": [
+        {
+          "type": "kpi",
+          "metrics": [
+            "active_users",
+            "message_volume",
+            "task_completion_rate",
+            "user_satisfaction"
+          ]
+        },
+        {
+          "type": "trend",
+          "metrics": [
+            "user_growth",
+            "engagement_rate"
+          ],
+          "timeframe": "30d"
+        }
+      ]
+    },
+    "operational_metrics": {
+      "refresh_rate": "5m",
+      "widgets": [
+        {
+          "type": "real_time",
+          "metrics": [
+            "active_sessions",
+            "response_time",
+            "error_rate"
+          ]
+        },
+        {
+          "type": "alerts",
+          "priority": ["high", "medium"]
+        }
+      ]
+    },
+    "user_analytics": {
+      "refresh_rate": "1d",
+      "widgets": [
+        {
+          "type": "segmentation",
+          "dimensions": [
+            "location",
+            "language",
+            "platform"
+          ]
+        },
+        {
+          "type": "funnel",
+          "stages": [
+            "onboarding",
+            "first_task",
+            "regular_usage"
+          ]
+        }
+      ]
+    }
+  },
+  "reports": {
+    "scheduled": {
+      "daily_summary": {
+        "schedule": "0 0 * * *",
+        "format": ["pdf", "excel"],
+        "recipients": ["management", "operations"]
+      },
+      "weekly_performance": {
+        "schedule": "0 0 * * 0",
+        "format": ["pdf", "excel"],
+        "recipients": ["management"]
+      }
+    },
+    "automated_insights": {
+      "enabled": true,
+      "triggers": {
+        "anomaly_detection": true,
+        "threshold_alerts": true,
+        "trend_analysis": true
+      }
+    }
+  },
+  "data_warehouse": {
+    "type": "snowflake",
+    "refresh_schedule": {
+      "full_refresh": "0 0 * * 0",
+      "incremental": "0 * * * *"
+    },
+    "schemas": {
+      "raw_data": {
+        "retention": "90d",
+        "tables": [
+          "messages",
+          "users",
+          "tasks",
+          "events"
+        ]
+      },
+      "analytics": {
+        "retention": "365d",
+        "tables": [
+          "user_metrics",
+          "engagement_metrics",
+          "performance_metrics"
+        ]
+      }
+    }
+  },
+  "visualizations": {
+    "libraries": ["plotly", "d3"],
+    "themes": {
+      "light": {
+        "primary_color": "#2196F3",
+        "background": "#FFFFFF",
+        "text": "#000000"
+      },
+      "dark": {
+        "primary_color": "#64B5F6",
+        "background": "#121212",
+        "text": "#FFFFFF"
+      }
+    }
+  },
+  "export_options": {
+    "formats": [
+      "pdf",
+      "excel",
+      "csv",
+      "json"
+    ],
+    "scheduling": {
+      "enabled": true,
+      "max_frequency": "1h"
+    }
+  },
+  "access_control": {
+    "roles": {
+      "analyst": {
+        "permissions": ["view", "export"],
+        "dashboards": ["operational_metrics", "user_analytics"]
+      },
+      "executive": {
+        "permissions": ["view", "export", "share"],
+        "dashboards": ["executive_summary"]
+      }
+    }
+  }
+}

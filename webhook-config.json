@@ -1,0 +1,65 @@
+{
+  "webhookConfig": {
+    "verifyToken": "{{WEBHOOK_VERIFY_TOKEN}}",
+    "appSecret": "{{WHATSAPP_APP_SECRET}}",
+    "endpoints": {
+      "messages": "/webhook/whatsapp-trigger",
+      "status": "/webhook/status-updates",
+      "health": "/webhook/health"
+    },
+    "security": {
+      "validateSignatures": true,
+      "validateTimestamp": true,
+      "maxMessageAge": 300
+    },
+    "rateLimit": {
+      "windowMs": 60000,
+      "max": 80,
+      "message": "Too many requests, please try again later."
+    },
+    "messageHandling": {
+      "types": [
+        "text",
+        "image",
+        "document",
+        "location",
+        "contacts",
+        "interactive"
+      ],
+      "queueConfig": {
+        "maxSize": 1000,
+        "processingDelay": 100,
+        "retryConfig": {
+          "attempts": 3,
+          "backoff": {
+            "type": "exponential",
+            "minDelay": 1000,
+            "maxDelay": 10000
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "logLevel": "error",
+      "notifications": {
+        "email": "{{ERROR_NOTIFICATION_EMAIL}}",
+        "threshold": 10
+      },
+      "fallbackResponse": {
+        "text": "I apologize, but I'm having trouble processing your request right now. Please try again in a few moments.",
+        "quick_replies": [
+          {
+            "content_type": "text",
+            "title": "Try Again",
+            "payload": "RETRY_LAST_ACTION"
+          },
+          {
+            "content_type": "text",
+            "title": "Help",
+            "payload": "SHOW_HELP"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "templates": {
+    "welcome": {
+      "name": "welcome_message",
+      "language": "en",
+      "components": [
+        {
+          "type": "header",
+          "format": "text",
+          "text": "Welcome to Your AI Assistant!"
+        },
+        {
+          "type": "body",
+          "text": "Hello {{1}}! I'm your personal AI assistant. I can help you with:\n• Calendar management\n• Reminders\n• Notes & Tasks\n• Weather updates\n• General questions\n\nWhat can I help you with today?"
+        },
+        {
+          "type": "buttons",
+          "buttons": [
+            {
+              "type": "reply",
+              "reply": {
+                "id": "calendar",
+                "title": "📅 Calendar"
+              }
+            },
+            {
+              "type": "reply",
+              "reply": {
+                "id": "reminder",
+                "title": "⏰ Reminder"
+              }
+            },
+            {
+              "type": "reply",
+              "reply": {
+                "id": "help",
+                "title": "❓ Help"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "reminder_set": {
+      "name": "reminder_confirmation",
+      "language": "en",
+      "components": [
+        {
+          "type": "body",
+          "text": "✅ I've set a reminder for:\nTask: {{1}}\nDate: {{2}}\nTime: {{3}}"
+        }
+      ]
+    },
+    "weather_report": {
+      "name": "weather_update",
+      "language": "en",
+      "components": [
+        {
+          "type": "header",
+          "format": "text",
+          "text": "Weather Update for {{1}}"
+        },
+        {
+          "type": "body",
+          "text": "🌡️ Temperature: {{2}}°C\n💨 Wind: {{3}} km/h\n💧 Humidity: {{4}}%\n🌅 Sunrise: {{5}}\n🌇 Sunset: {{6}}"
+        }
+      ]
+    }
+  },
+  "quick_replies": {
+    "main_menu": [
+      {
+        "type": "text",
+        "title": "📅 Calendar",
+        "payload": "SHOW_CALENDAR"
+      },
+      {
+        "type": "text",
+        "title": "📝 Notes",
+        "payload": "SHOW_NOTES"
+      },
+      {
+        "type": "text",
+        "title": "⏰ Reminders",
+        "payload": "SHOW_REMINDERS"
+      },
+      {
+        "type": "text",
+        "title": "🌤️ Weather",
+        "payload": "GET_WEATHER"
+      }
+    ]
+  }
+}

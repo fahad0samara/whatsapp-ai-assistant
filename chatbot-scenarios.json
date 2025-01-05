@@ -1,0 +1,162 @@
+{
+  "conversation_flows": {
+    "onboarding": {
+      "steps": [
+        {
+          "id": "welcome",
+          "type": "message",
+          "content": "Welcome to your AI Assistant! Let's get you set up.",
+          "next": "get_name"
+        },
+        {
+          "id": "get_name",
+          "type": "input",
+          "content": "What should I call you?",
+          "validation": {
+            "type": "text",
+            "min_length": 2
+          },
+          "next": "get_timezone"
+        },
+        {
+          "id": "get_timezone",
+          "type": "location",
+          "content": "To provide accurate time-based services, I need your location.",
+          "next": "preferences"
+        },
+        {
+          "id": "preferences",
+          "type": "quick_replies",
+          "content": "What services are you most interested in?",
+          "options": [
+            "Calendar Management",
+            "Task Reminders",
+            "Weather Updates",
+            "All Services"
+          ],
+          "next": "setup_complete"
+        }
+      ]
+    },
+    "task_management": {
+      "steps": [
+        {
+          "id": "task_type",
+          "type": "menu",
+          "options": [
+            "Add Task",
+            "View Tasks",
+            "Mark Complete",
+            "Set Priority"
+          ]
+        },
+        {
+          "id": "task_details",
+          "type": "form",
+          "fields": [
+            {
+              "name": "title",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "due_date",
+              "type": "date",
+              "required": true
+            },
+            {
+              "name": "priority",
+              "type": "select",
+              "options": ["High", "Medium", "Low"]
+            }
+          ]
+        }
+      ]
+    },
+    "meeting_scheduling": {
+      "steps": [
+        {
+          "id": "get_participants",
+          "type": "input",
+          "content": "Who would you like to meet with?",
+          "entity_recognition": {
+            "type": "contact",
+            "multiple": true
+          }
+        },
+        {
+          "id": "get_duration",
+          "type": "quick_replies",
+          "options": ["15min", "30min", "1hour"]
+        },
+        {
+          "id": "suggest_times",
+          "type": "calendar_slots",
+          "count": 3,
+          "check_availability": true
+        }
+      ]
+    }
+  },
+  "conversation_handlers": {
+    "interrupts": {
+      "help": {
+        "keywords": ["help", "support", "confused"],
+        "response": "I'm here to help! You can ask me about:",
+        "show_menu": true
+      },
+      "cancel": {
+        "keywords": ["cancel", "stop", "exit"],
+        "confirm": true,
+        "reset_context": true
+      }
+    },
+    "fallbacks": {
+      "clarification": {
+        "max_attempts": 3,
+        "responses": [
+          "I didn't quite catch that. Could you rephrase?",
+          "I'm still learning. Can you say that differently?",
+          "Let me get help from a human assistant."
+        ]
+      }
+    }
+  },
+  "personality": {
+    "tone": "professional_friendly",
+    "response_styles": {
+      "success": {
+        "emoji": true,
+        "confirmation": true
+      },
+      "error": {
+        "apologetic": true,
+        "solution_oriented": true
+      }
+    },
+    "small_talk": {
+      "enabled": true,
+      "topics": [
+        "weather",
+        "greetings",
+        "gratitude"
+      ]
+    }
+  },
+  "context_management": {
+    "memory_types": {
+      "short_term": {
+        "ttl": 1800,
+        "max_entries": 10
+      },
+      "long_term": {
+        "ttl": 2592000,
+        "max_entries": 100
+      }
+    },
+    "state_machine": {
+      "max_stack_size": 5,
+      "timeout": 300
+    }
+  }
+}

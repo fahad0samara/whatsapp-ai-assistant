@@ -1,0 +1,163 @@
+{
+  "environments": {
+    "development": {
+      "infrastructure": {
+        "provider": "docker-compose",
+        "resources": {
+          "cpu": "2",
+          "memory": "4Gi",
+          "storage": "20Gi"
+        }
+      }
+    },
+    "staging": {
+      "infrastructure": {
+        "provider": "kubernetes",
+        "cluster": {
+          "region": "us-east-1",
+          "nodes": 3,
+          "node_type": "t3.medium"
+        },
+        "resources": {
+          "cpu": "4",
+          "memory": "8Gi",
+          "storage": "50Gi"
+        }
+      }
+    },
+    "production": {
+      "infrastructure": {
+        "provider": "kubernetes",
+        "cluster": {
+          "region": "us-east-1",
+          "nodes": 5,
+          "node_type": "t3.large",
+          "auto_scaling": {
+            "min_nodes": 3,
+            "max_nodes": 10,
+            "target_cpu_utilization": 70
+          }
+        },
+        "resources": {
+          "cpu": "8",
+          "memory": "16Gi",
+          "storage": "100Gi"
+        }
+      }
+    }
+  },
+  "containers": {
+    "registry": {
+      "provider": "aws_ecr",
+      "repository": "whatsapp-ai-assistant",
+      "tag_format": "${ENV}-${VERSION}-${GIT_SHA}"
+    },
+    "build": {
+      "dockerfile": "Dockerfile",
+      "cache": true,
+      "multi_stage": true,
+      "args": {
+        "NODE_ENV": "${ENV}",
+        "BUILD_VERSION": "${VERSION}"
+      }
+    }
+  },
+  "ci_cd": {
+    "provider": "github_actions",
+    "workflows": {
+      "build": {
+        "triggers": ["push", "pull_request"],
+        "steps": [
+          "lint",
+          "test",
+          "build",
+          "scan_security"
+        ]
+      },
+      "deploy": {
+        "triggers": ["release"],
+        "environments": ["staging", "production"],
+        "approval_required": true
+      }
+    }
+  },
+  "monitoring": {
+    "services": {
+      "prometheus": {
+        "enabled": true,
+        "retention_days": 30,
+        "scrape_interval": "15s"
+      },
+      "grafana": {
+        "enabled": true,
+        "dashboards": ["system", "application", "business"]
+      },
+      "elasticsearch": {
+        "enabled": true,
+        "retention_days": 30
+      }
+    },
+    "alerts": {
+      "providers": ["pagerduty", "slack"],
+      "rules": {
+        "high_error_rate": {
+          "threshold": "5%",
+          "window": "5m",
+          "severity": "critical"
+        },
+        "high_latency": {
+          "threshold": "1s",
+          "window": "5m",
+          "severity": "warning"
+        }
+      }
+    }
+  },
+  "scaling": {
+    "auto_scaling": {
+      "metrics": ["cpu", "memory", "requests"],
+      "rules": {
+        "cpu": {
+          "target_utilization": 70,
+          "scale_up_threshold": 80,
+          "scale_down_threshold": 60
+        },
+        "memory": {
+          "target_utilization": 70,
+          "scale_up_threshold": 80,
+          "scale_down_threshold": 60
+        }
+      }
+    },
+    "load_balancing": {
+      "type": "application",
+      "algorithm": "round_robin",
+      "ssl": {
+        "enabled": true,
+        "certificate_arn": "${SSL_CERT_ARN}"
+      }
+    }
+  },
+  "backup": {
+    "databases": {
+      "schedule": "0 0 * * *",
+      "retention_days": 30,
+      "type": "snapshot"
+    },
+    "files": {
+      "schedule": "0 0 * * 0",
+      "retention_days": 90,
+      "type": "incremental"
+    }
+  },
+  "disaster_recovery": {
+    "rpo": "1h",
+    "rto": "4h",
+    "strategy": "active_passive",
+    "failover": {
+      "automatic": true,
+      "health_check_interval": "30s",
+      "threshold": 3
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "voice_processing": {
+    "speech_to_text": {
+      "provider": "whisper",
+      "model": "whisper-1",
+      "settings": {
+        "language": "auto",
+        "task": "transcribe",
+        "temperature": 0,
+        "response_format": "json",
+        "timestamp_granularity": "word"
+      },
+      "fallback_provider": "google_speech",
+      "max_duration_seconds": 300,
+      "supported_formats": ["ogg", "mp3", "wav", "m4a"]
+    },
+    "text_to_speech": {
+      "provider": "elevenlabs",
+      "settings": {
+        "model": "eleven_multilingual_v2",
+        "voice_settings": {
+          "stability": 0.7,
+          "similarity_boost": 0.7
+        },
+        "output_format": "mp3"
+      },
+      "fallback_provider": "google_tts"
+    },
+    "voice_analysis": {
+      "features": {
+        "emotion_detection": true,
+        "speaker_identification": true,
+        "language_detection": true,
+        "noise_reduction": true
+      }
+    }
+  },
+  "media_processing": {
+    "image": {
+      "processing": {
+        "max_size_mb": 5,
+        "allowed_formats": ["jpg", "jpeg", "png", "webp"],
+        "compression": {
+          "enabled": true,
+          "quality": 85,
+          "max_width": 2048
+        },
+        "optimization": {
+          "metadata_stripping": true,
+          "auto_orientation": true
+        }
+      },
+      "analysis": {
+        "provider": "azure_vision",
+        "features": {
+          "object_detection": true,
+          "ocr": true,
+          "face_detection": true,
+          "nsfw_detection": true,
+          "landmark_detection": true
+        }
+      }
+    },
+    "video": {
+      "processing": {
+        "max_size_mb": 16,
+        "allowed_formats": ["mp4", "mov", "avi"],
+        "transcoding": {
+          "codec": "h264",
+          "format": "mp4",
+          "quality": "medium"
+        }
+      },
+      "analysis": {
+        "scene_detection": true,
+        "content_moderation": true,
+        "thumbnail_generation": {
+          "interval_seconds": 5,
+          "max_thumbnails": 10
+        }
+      }
+    },
+    "document": {
+      "processing": {
+        "max_size_mb": 10,
+        "allowed_formats": ["pdf", "doc", "docx", "txt"],
+        "ocr": {
+          "enabled": true,
+          "language": ["eng", "spa", "fra", "ara"]
+        }
+      }
+    }
+  },
+  "storage": {
+    "provider": "aws_s3",
+    "bucket_configuration": {
+      "media_bucket": "whatsapp-assistant-media",
+      "backup_bucket": "whatsapp-assistant-backup"
+    },
+    "lifecycle_rules": {
+      "temp_files_ttl": 24,
+      "processed_files_ttl": 90
+    },
+    "cdn_configuration": {
+      "enabled": true,
+      "cache_control": "public, max-age=31536000"
+    }
+  }
+}

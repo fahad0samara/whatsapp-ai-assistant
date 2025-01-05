@@ -1,0 +1,102 @@
+{
+  "metrics": {
+    "user_engagement": {
+      "daily_active_users": {
+        "type": "counter",
+        "description": "Number of unique users per day"
+      },
+      "message_volume": {
+        "type": "histogram",
+        "description": "Distribution of messages per user per day"
+      },
+      "response_time": {
+        "type": "gauge",
+        "description": "Average time to respond to messages",
+        "unit": "milliseconds"
+      }
+    },
+    "feature_usage": {
+      "intent_distribution": {
+        "type": "counter",
+        "labels": ["calendar", "reminder", "notes", "weather", "general"]
+      },
+      "successful_interactions": {
+        "type": "counter",
+        "description": "Successfully completed user requests"
+      },
+      "failed_interactions": {
+        "type": "counter",
+        "description": "Failed or incomplete user requests"
+      }
+    },
+    "system_health": {
+      "api_latency": {
+        "type": "histogram",
+        "description": "API response times",
+        "buckets": [50, 100, 200, 500, 1000]
+      },
+      "error_rate": {
+        "type": "gauge",
+        "description": "Error rate per minute"
+      },
+      "queue_size": {
+        "type": "gauge",
+        "description": "Current message queue size"
+      }
+    }
+  },
+  "reports": {
+    "daily_summary": {
+      "metrics": [
+        "daily_active_users",
+        "message_volume",
+        "intent_distribution",
+        "error_rate"
+      ],
+      "schedule": "0 0 * * *"
+    },
+    "weekly_performance": {
+      "metrics": [
+        "response_time",
+        "successful_interactions",
+        "failed_interactions",
+        "api_latency"
+      ],
+      "schedule": "0 0 * * 0"
+    }
+  },
+  "alerts": {
+    "high_error_rate": {
+      "metric": "error_rate",
+      "threshold": 0.05,
+      "duration": "5m",
+      "notification": {
+        "channels": ["email", "slack"],
+        "priority": "high"
+      }
+    },
+    "response_time_degradation": {
+      "metric": "response_time",
+      "threshold": 2000,
+      "duration": "10m",
+      "notification": {
+        "channels": ["email", "slack"],
+        "priority": "medium"
+      }
+    },
+    "queue_overflow": {
+      "metric": "queue_size",
+      "threshold": 1000,
+      "duration": "1m",
+      "notification": {
+        "channels": ["email", "slack"],
+        "priority": "high"
+      }
+    }
+  },
+  "retention": {
+    "metrics_retention_days": 90,
+    "aggregated_data_retention_days": 365,
+    "log_retention_days": 30
+  }
+}

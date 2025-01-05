@@ -1,0 +1,127 @@
+{
+  "collections": {
+    "users": {
+      "fields": {
+        "phone_number": {"type": "string", "unique": true, "required": true},
+        "name": {"type": "string"},
+        "timezone": {"type": "string", "default": "UTC"},
+        "language": {"type": "string", "default": "en"},
+        "preferences": {
+          "type": "object",
+          "properties": {
+            "weather_unit": {"type": "string", "enum": ["celsius", "fahrenheit"]},
+            "time_format": {"type": "string", "enum": ["12h", "24h"]},
+            "notifications_enabled": {"type": "boolean"},
+            "daily_summary": {"type": "boolean"}
+          }
+        },
+        "gdpr_consent": {
+          "type": "object",
+          "properties": {
+            "data_processing": {"type": "boolean"},
+            "marketing": {"type": "boolean"},
+            "consent_date": {"type": "date"}
+          }
+        },
+        "created_at": {"type": "date"},
+        "last_active": {"type": "date"}
+      }
+    },
+    "conversations": {
+      "fields": {
+        "user_id": {"type": "objectId", "ref": "users"},
+        "context": {
+          "type": "object",
+          "properties": {
+            "current_intent": {"type": "string"},
+            "last_intent": {"type": "string"},
+            "parameters": {"type": "object"},
+            "step": {"type": "string"}
+          }
+        },
+        "messages": [{
+          "type": "object",
+          "properties": {
+            "content": {"type": "string"},
+            "type": {"type": "string"},
+            "timestamp": {"type": "date"},
+            "direction": {"type": "string", "enum": ["incoming", "outgoing"]}
+          }
+        }],
+        "created_at": {"type": "date"},
+        "updated_at": {"type": "date"}
+      }
+    },
+    "reminders": {
+      "fields": {
+        "user_id": {"type": "objectId", "ref": "users"},
+        "title": {"type": "string", "required": true},
+        "description": {"type": "string"},
+        "due_date": {"type": "date", "required": true},
+        "repeat": {
+          "type": "object",
+          "properties": {
+            "frequency": {"type": "string", "enum": ["daily", "weekly", "monthly", "yearly"]},
+            "interval": {"type": "number"},
+            "until": {"type": "date"}
+          }
+        },
+        "status": {"type": "string", "enum": ["pending", "completed", "cancelled"]},
+        "notification_sent": {"type": "boolean", "default": false}
+      }
+    },
+    "notes": {
+      "fields": {
+        "user_id": {"type": "objectId", "ref": "users"},
+        "title": {"type": "string"},
+        "content": {"type": "string"},
+        "tags": [{"type": "string"}],
+        "created_at": {"type": "date"},
+        "updated_at": {"type": "date"}
+      }
+    },
+    "calendar_events": {
+      "fields": {
+        "user_id": {"type": "objectId", "ref": "users"},
+        "title": {"type": "string", "required": true},
+        "description": {"type": "string"},
+        "start_time": {"type": "date", "required": true},
+        "end_time": {"type": "date", "required": true},
+        "location": {"type": "string"},
+        "attendees": [{
+          "type": "object",
+          "properties": {
+            "name": {"type": "string"},
+            "email": {"type": "string"},
+            "status": {"type": "string", "enum": ["pending", "accepted", "declined"]}
+          }
+        }],
+        "reminders": [{
+          "type": "object",
+          "properties": {
+            "time": {"type": "number"},
+            "unit": {"type": "string", "enum": ["minutes", "hours", "days"]}
+          }
+        }]
+      }
+    }
+  },
+  "indexes": {
+    "users": [
+      {"fields": {"phone_number": 1}, "unique": true},
+      {"fields": {"last_active": -1}}
+    ],
+    "conversations": [
+      {"fields": {"user_id": 1, "updated_at": -1}},
+      {"fields": {"created_at": 1}}
+    ],
+    "reminders": [
+      {"fields": {"user_id": 1, "due_date": 1}},
+      {"fields": {"status": 1, "due_date": 1}}
+    ],
+    "calendar_events": [
+      {"fields": {"user_id": 1, "start_time": 1}},
+      {"fields": {"user_id": 1, "end_time": 1}}
+    ]
+  }
+}

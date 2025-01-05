@@ -1,0 +1,111 @@
+{
+  "unit_tests": {
+    "framework": "jest",
+    "coverage": {
+      "statements": 85,
+      "branches": 80,
+      "functions": 85,
+      "lines": 85
+    },
+    "patterns": {
+      "test_files": "**/*.test.js",
+      "ignore": ["**/node_modules/**", "**/dist/**"]
+    },
+    "mocks": {
+      "external_services": true,
+      "databases": true,
+      "file_system": true
+    }
+  },
+  "integration_tests": {
+    "framework": "supertest",
+    "database": {
+      "use_test_db": true,
+      "seed_data": true,
+      "cleanup_after": true
+    },
+    "api_tests": {
+      "timeout": 5000,
+      "retry_attempts": 3
+    }
+  },
+  "e2e_tests": {
+    "framework": "cypress",
+    "viewport": {
+      "width": 1280,
+      "height": 720
+    },
+    "browsers": ["chrome", "firefox"],
+    "recording": {
+      "video": true,
+      "screenshots": true
+    }
+  },
+  "load_tests": {
+    "framework": "k6",
+    "scenarios": {
+      "spike": {
+        "duration": "10m",
+        "target_vus": 100,
+        "max_vus": 200
+      },
+      "stress": {
+        "duration": "30m",
+        "target_vus": 50
+      },
+      "soak": {
+        "duration": "4h",
+        "target_vus": 20
+      }
+    },
+    "thresholds": {
+      "http_req_duration": ["p(95)<500"],
+      "http_req_failed": ["rate<0.01"]
+    }
+  },
+  "security_tests": {
+    "framework": "zap",
+    "scan_types": {
+      "active": true,
+      "passive": true,
+      "api": true
+    },
+    "rules": {
+      "risk_level": "high",
+      "excluded_rules": []
+    }
+  },
+  "mock_data": {
+    "providers": {
+      "faker": true,
+      "custom_generators": true
+    },
+    "datasets": {
+      "users": 100,
+      "messages": 1000,
+      "transactions": 500
+    }
+  },
+  "test_environments": {
+    "local": {
+      "api_url": "http://localhost:3000",
+      "mock_external_services": true
+    },
+    "staging": {
+      "api_url": "https://staging-api.example.com",
+      "mock_external_services": false
+    }
+  },
+  "reporting": {
+    "formats": ["HTML", "JSON", "JUnit"],
+    "notifications": {
+      "slack": true,
+      "email": true
+    },
+    "metrics": {
+      "coverage_trends": true,
+      "performance_trends": true,
+      "test_duration": true
+    }
+  }
+}

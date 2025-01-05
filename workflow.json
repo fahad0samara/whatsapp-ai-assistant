@@ -1,0 +1,204 @@
+{
+  "name": "WhatsApp AI Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "onMessageReceived",
+        "phoneNumberId": "={{$env.WHATSAPP_PHONE_ID}}",
+        "fields": {
+          "message": true,
+          "from": true,
+          "timestamp": true
+        }
+      },
+      "name": "WhatsApp Trigger",
+      "type": "n8n-nodes-base.whatsappTrigger",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "dataType": "string",
+        "value": "={{ $input.body.message }}",
+        "options": {}
+      },
+      "name": "Message Preprocessor",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "apiKey",
+        "apiKey": "={{$env.OPENAI_API_KEY}}",
+        "model": "gpt-4",
+        "prompt": "={{ $input.item.json.preprocessedMessage }}",
+        "maxTokens": 150,
+        "temperature": 0.7
+      },
+      "name": "NLP Processor",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.intent }}",
+              "operation": "contains",
+              "value2": "calendar"
+            }
+          ]
+        }
+      },
+      "name": "Intent Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.openweathermap.org/data/2.5/weather",
+        "authentication": "genericCredentials",
+        "genericAuthType": "queryAuth",
+        "queryParameters": {
+          "appid": "={{$env.WEATHER_API_KEY}}",
+          "q": "={{ $input.item.json.location }}"
+        }
+      },
+      "name": "Weather API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 2,
+      "position": [850, 500]
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "user_data",
+        "fields": {
+          "userId": "={{ $input.item.json.from }}",
+          "timestamp": "={{ $now }}",
+          "data": "={{ $input.item.json }}"
+        }
+      },
+      "name": "MongoDB",
+      "type": "n8n-nodes-base.mongodb",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "sendMessage",
+        "phoneNumberId": "={{$env.WHATSAPP_PHONE_ID}}",
+        "to": "={{ $input.item.json.from }}",
+        "message": "={{ $input.item.json.response }}"
+      },
+      "name": "WhatsApp Response",
+      "type": "n8n-nodes-base.whatsapp",
+      "typeVersion": 1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $input.item.json.error }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1050, 500]
+    }
+  ],
+  "connections": {
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message Preprocessor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Preprocessor": {
+      "main": [
+        [
+          {
+            "node": "NLP Processor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NLP Processor": {
+      "main": [
+        [
+          {
+            "node": "Intent Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Intent Router": {
+      "main": [
+        [
+          {
+            "node": "MongoDB",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Weather API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MongoDB": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weather API": {
+      "main": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "pinData": {},
+  "versionId": "",
+  "triggerCount": 1
+}

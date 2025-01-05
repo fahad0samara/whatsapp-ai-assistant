@@ -1,0 +1,101 @@
+{
+  "models": {
+    "intent_classification": {
+      "model": "gpt-4",
+      "temperature": 0.3,
+      "max_tokens": 150,
+      "system_prompt": "You are a WhatsApp AI assistant. Classify user intents and extract relevant entities.",
+      "fallback_confidence": 0.7
+    },
+    "response_generation": {
+      "model": "gpt-4",
+      "temperature": 0.7,
+      "max_tokens": 300,
+      "system_prompt": "You are a helpful WhatsApp assistant. Provide concise, accurate responses."
+    },
+    "sentiment_analysis": {
+      "model": "text-davinci-003",
+      "temperature": 0.3,
+      "max_tokens": 60
+    }
+  },
+  "intent_patterns": {
+    "calendar": {
+      "patterns": [
+        "schedule (meeting|appointment|call)",
+        "book (a|an) (.+)",
+        "add to (calendar|schedule)",
+        "what('s| is) (my|the) schedule"
+      ],
+      "entities": ["date", "time", "duration", "participants", "location"]
+    },
+    "reminder": {
+      "patterns": [
+        "remind me to (.+)",
+        "set (a|an) reminder",
+        "don't let me forget",
+        "notification for"
+      ],
+      "entities": ["task", "date", "time", "priority", "repeat"]
+    },
+    "weather": {
+      "patterns": [
+        "weather (in|for|at) (.+)",
+        "temperature (in|at) (.+)",
+        "will it rain",
+        "forecast"
+      ],
+      "entities": ["location", "date", "weather_attribute"]
+    },
+    "notes": {
+      "patterns": [
+        "take (a )?note",
+        "write (this )?down",
+        "save this",
+        "create (a )?note"
+      ],
+      "entities": ["content", "title", "tags"]
+    }
+  },
+  "entity_extraction": {
+    "date_formats": [
+      "YYYY-MM-DD",
+      "MM/DD/YYYY",
+      "DD/MM/YYYY",
+      "natural_language"
+    ],
+    "time_formats": [
+      "HH:mm",
+      "hh:mm a",
+      "natural_language"
+    ],
+    "location_types": [
+      "city",
+      "country",
+      "address",
+      "point_of_interest"
+    ]
+  },
+  "context_management": {
+    "context_ttl": 1800,
+    "max_context_length": 10,
+    "context_variables": [
+      "current_task",
+      "last_intent",
+      "user_timezone",
+      "conversation_state"
+    ]
+  },
+  "response_templates": {
+    "clarification": [
+      "I'm not sure about {entity}. Could you please specify?",
+      "What {entity} would you prefer?",
+      "Could you provide more details about {entity}?"
+    ],
+    "confirmation": [
+      "I've {action} for {details}. Is that correct?",
+      "Just to confirm: {details}. Should I proceed?",
+      "Here's what I'm going to do: {details}. OK?"
+    ]
+  }
+}

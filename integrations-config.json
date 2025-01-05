@@ -1,0 +1,97 @@
+{
+  "calendar": {
+    "google_calendar": {
+      "api_version": "v3",
+      "scopes": [
+        "https://www.googleapis.com/auth/calendar.readonly",
+        "https://www.googleapis.com/auth/calendar.events"
+      ],
+      "sync_interval": 300,
+      "webhook_notification": true,
+      "default_reminder_minutes": 10
+    },
+    "outlook_calendar": {
+      "api_version": "v2.0",
+      "scopes": [
+        "Calendars.ReadWrite",
+        "Calendars.Read.Shared"
+      ],
+      "sync_interval": 300
+    }
+  },
+  "weather": {
+    "openweathermap": {
+      "api_version": "2.5",
+      "endpoints": {
+        "current": "/weather",
+        "forecast": "/forecast",
+        "onecall": "/onecall"
+      },
+      "cache_duration": 1800,
+      "units": "metric"
+    },
+    "weatherapi": {
+      "endpoints": {
+        "current": "/current.json",
+        "forecast": "/forecast.json",
+        "search": "/search.json"
+      },
+      "cache_duration": 1800
+    }
+  },
+  "task_management": {
+    "todoist": {
+      "sync_interval": 300,
+      "webhook_enabled": true,
+      "default_project": "Inbox"
+    },
+    "trello": {
+      "webhook_enabled": true,
+      "default_list": "To Do",
+      "labels": {
+        "high": "red",
+        "medium": "yellow",
+        "low": "green"
+      }
+    }
+  },
+  "note_taking": {
+    "evernote": {
+      "sandbox": false,
+      "sync_interval": 600,
+      "default_notebook": "WhatsApp Assistant"
+    },
+    "notion": {
+      "version": "2022-06-28",
+      "default_page": "WhatsApp Notes",
+      "sync_interval": 600
+    }
+  },
+  "translation": {
+    "google_translate": {
+      "api_version": "v2",
+      "cache_duration": 86400
+    },
+    "deepl": {
+      "api_version": "v2",
+      "formality_preference": "default"
+    }
+  },
+  "authentication": {
+    "oauth2": {
+      "authorization_timeout": 300,
+      "token_refresh_window": 3600,
+      "max_retry_attempts": 3
+    }
+  },
+  "webhooks": {
+    "retry_policy": {
+      "max_attempts": 5,
+      "initial_delay": 1000,
+      "max_delay": 32000,
+      "backoff_multiplier": 2
+    },
+    "timeout": 10000,
+    "signature_header": "X-Webhook-Signature"
+  }
+}

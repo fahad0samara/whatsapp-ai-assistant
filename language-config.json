@@ -1,0 +1,92 @@
+{
+  "supported_languages": {
+    "en": {
+      "name": "English",
+      "default": true,
+      "fallback": true,
+      "date_format": "MM/DD/YYYY",
+      "time_format": "hh:mm A"
+    },
+    "es": {
+      "name": "Spanish",
+      "date_format": "DD/MM/YYYY",
+      "time_format": "HH:mm"
+    },
+    "fr": {
+      "name": "French",
+      "date_format": "DD/MM/YYYY",
+      "time_format": "HH:mm"
+    },
+    "ar": {
+      "name": "Arabic",
+      "direction": "rtl",
+      "date_format": "DD/MM/YYYY",
+      "time_format": "HH:mm"
+    }
+  },
+  "translation_settings": {
+    "auto_detect": true,
+    "preserve_entities": [
+      "person",
+      "organization",
+      "location",
+      "date",
+      "time"
+    ],
+    "cache_translations": true,
+    "cache_duration": 86400
+  },
+  "localization": {
+    "number_formats": {
+      "en": {
+        "decimal_separator": ".",
+        "thousands_separator": ","
+      },
+      "fr": {
+        "decimal_separator": ",",
+        "thousands_separator": " "
+      }
+    },
+    "currency_formats": {
+      "USD": "${amount}",
+      "EUR": "€{amount}",
+      "GBP": "£{amount}"
+    }
+  },
+  "intent_mapping": {
+    "calendar": {
+      "en": ["schedule", "appointment", "meeting"],
+      "es": ["programar", "cita", "reunión"],
+      "fr": ["planifier", "rendez-vous", "réunion"]
+    },
+    "weather": {
+      "en": ["weather", "temperature", "forecast"],
+      "es": ["clima", "temperatura", "pronóstico"],
+      "fr": ["météo", "température", "prévisions"]
+    }
+  },
+  "response_templates": {
+    "greeting": {
+      "en": "Hello! How can I help you today?",
+      "es": "¡Hola! ¿Cómo puedo ayudarte hoy?",
+      "fr": "Bonjour! Comment puis-je vous aider aujourd'hui?"
+    },
+    "confirmation": {
+      "en": "I've completed that for you. Anything else?",
+      "es": "He completado eso para ti. ¿Algo más?",
+      "fr": "J'ai terminé ça pour vous. Autre chose?"
+    }
+  },
+  "error_messages": {
+    "not_understood": {
+      "en": "I'm sorry, I didn't understand that. Could you rephrase?",
+      "es": "Lo siento, no entendí eso. ¿Podrías reformularlo?",
+      "fr": "Désolé, je n'ai pas compris. Pourriez-vous reformuler?"
+    },
+    "service_unavailable": {
+      "en": "Sorry, this service is temporarily unavailable.",
+      "es": "Lo siento, este servicio no está disponible temporalmente.",
+      "fr": "Désolé, ce service est temporairement indisponible."
+    }
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "models": {
+    "intent_classification": {
+      "type": "fine_tuned_gpt",
+      "base_model": "gpt-3.5-turbo",
+      "training_config": {
+        "epochs": 3,
+        "batch_size": 8,
+        "learning_rate": 1e-5,
+        "validation_split": 0.2
+      },
+      "data_preparation": {
+        "min_samples_per_class": 100,
+        "max_sequence_length": 512,
+        "augmentation": {
+          "enabled": true,
+          "techniques": ["synonym_replacement", "back_translation"]
+        }
+      }
+    },
+    "sentiment_analysis": {
+      "type": "distilbert",
+      "training_config": {
+        "epochs": 5,
+        "batch_size": 16,
+        "learning_rate": 2e-5
+      },
+      "data_preparation": {
+        "text_cleaning": true,
+        "balance_classes": true
+      }
+    },
+    "entity_recognition": {
+      "type": "fine_tuned_gpt",
+      "base_model": "gpt-3.5-turbo",
+      "training_config": {
+        "epochs": 4,
+        "batch_size": 8,
+        "learning_rate": 1e-5
+      },
+      "entities": [
+        "person",
+        "organization",
+        "location",
+        "date_time",
+        "custom_entities"
+      ]
+    }
+  },
+  "training_pipeline": {
+    "data_collection": {
+      "sources": [
+        "conversation_logs",
+        "user_feedback",
+        "manual_annotations"
+      ],
+      "sampling": {
+        "method": "stratified",
+        "size": 10000
+      }
+    },
+    "preprocessing": {
+      "text_cleaning": {
+        "remove_special_chars": true,
+        "normalize_unicode": true,
+        "expand_contractions": true
+      },
+      "tokenization": {
+        "method": "wordpiece",
+        "max_length": 512
+      }
+    },
+    "evaluation": {
+      "metrics": [
+        "accuracy",
+        "precision",
+        "recall",
+        "f1_score"
+      ],
+      "validation": {
+        "method": "k_fold",
+        "k": 5
+      },
+      "thresholds": {
+        "accuracy": 0.85,
+        "f1_score": 0.80
+      }
+    }
+  },
+  "deployment": {
+    "versioning": {
+      "strategy": "blue_green",
+      "rollback_threshold": {
+        "error_rate": 0.05,
+        "latency_ms": 500
+      }
+    },
+    "monitoring": {
+      "metrics": [
+        "prediction_latency",
+        "error_rate",
+        "confidence_distribution"
+      ],
+      "drift_detection": {
+        "enabled": true,
+        "check_frequency": "1h"
+      }
+    }
+  },
+  "continuous_learning": {
+    "data_collection": {
+      "enabled": true,
+      "sampling_rate": 0.1,
+      "storage_ttl": 90
+    },
+    "retraining_triggers": {
+      "schedule": "weekly",
+      "performance_drop": 0.05,
+      "data_drift": 0.1
+    },
+    "human_in_loop": {
+      "enabled": true,
+      "review_threshold": 0.7,
+      "batch_size": 100
+    }
+  }
+}
